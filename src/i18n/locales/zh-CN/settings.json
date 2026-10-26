@@ -21,6 +21,9 @@
 		"plugins": "插件"
 	},
 	"remoteAccess": {
+		"relayEndpoint": {
+			"label": "中继地址"
+		},
 		"title": "远程访问",
 		"localVaultRequired": "请打开本地 Vault 后再提供远程访问。",
 		"hostName": {

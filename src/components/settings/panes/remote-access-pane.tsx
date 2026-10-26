@@ -33,6 +33,7 @@ import {
 import { copyTextToClipboard } from "@/lib/core/clipboard";
 import { errorText } from "@/lib/core/error";
 import { notifyError } from "@/lib/core/notify";
+import { readJsonStorage, writeJsonStorage } from "@/lib/core/storage";
 import { isTauri } from "@/lib/core/tauri";
 import { toSafeDisposer } from "@/lib/core/tauri-events";
 import {
@@ -41,6 +42,7 @@ import {
 } from "@/lib/vault/remote/remote-vault";
 
 const DEFAULT_RELAY = "relay.agentero.app";
+const RELAY_STORAGE_KEY = "agentero.bridge.relayEndpoint";
 
 export function RemoteAccessPane({ vaultPath }: { vaultPath: string | null }) {
 	const { t } = useTranslation("settings");
@@ -53,6 +55,10 @@ export function RemoteAccessPane({ vaultPath }: { vaultPath: string | null }) {
 		() => window.location.hostname || "Agentero",
 	);
 	const [busy, setBusy] = useState(false);
+	const [relayEndpoint, setRelayEndpoint] = useState(() => {
+		const saved = readJsonStorage<unknown>(RELAY_STORAGE_KEY, DEFAULT_RELAY);
+		return typeof saved === "string" && saved.trim() ? saved : DEFAULT_RELAY;
+	});
 
 	const refresh = useCallback(async () => {
 		const next = await bridgeHostStatus();
@@ -105,7 +111,9 @@ export function RemoteAccessPane({ vaultPath }: { vaultPath: string | null }) {
 		if (!vaultPath || isRemoteVaultHandle(vaultPath)) return;
 		setBusy(true);
 		try {
-			await bridgeStart({ vaultPath, hostName, relayEndpoint: DEFAULT_RELAY });
+			const endpoint = relayEndpoint.trim() || DEFAULT_RELAY;
+			await bridgeStart({ vaultPath, hostName, relayEndpoint: endpoint });
+			writeJsonStorage(RELAY_STORAGE_KEY, endpoint);
 			await refresh();
 		} catch (error) {
 			notifyError(errorText(error));
@@ -199,6 +207,19 @@ export function RemoteAccessPane({ vaultPath }: { vaultPath: string | null }) {
 								onChange={(event) => setHostName(event.target.value)}
 								disabled={status?.enabled}
 								className="h-8 w-44"
+							/>
+						</SettingsRow>
+						<SettingsRow
+							label={t("remoteAccess.relayEndpoint.label")}
+							htmlFor="bridge-relay-endpoint"
+						>
+							<Input
+								id="bridge-relay-endpoint"
+								value={relayEndpoint}
+								onChange={(event) => setRelayEndpoint(event.target.value)}
+								placeholder="ws://192.168.1.10:4000"
+								disabled={status?.enabled}
+								className="h-8 w-72"
 							/>
 						</SettingsRow>
 					</SettingsGroup>

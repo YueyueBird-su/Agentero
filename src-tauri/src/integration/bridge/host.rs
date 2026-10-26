@@ -1212,10 +1212,20 @@ fn decode_crypto_box_public_key(value: &str) -> Result<PublicKey, AppError> {
 
 fn relay_endpoint_for_offer(endpoint: &RelayEndpoint) -> String {
     let url = endpoint.websocket_url();
-    let host = url.host_str().unwrap_or_default();
-    match url.port_or_known_default() {
+    let host = match url.host() {
+        Some(url::Host::Ipv6(address)) => format!("[{address}]"),
+        _ => url.host_str().unwrap_or_default().to_string(),
+    };
+    let authority = match url.port_or_known_default() {
         Some(port) => format!("{host}:{port}"),
-        None => host.to_string(),
+        None => host,
+    };
+    // Scheme-less offers are interpreted as WSS by mobile clients. Preserve
+    // explicit WS for LAN relays while keeping existing secure offers stable.
+    if url.scheme() == "ws" {
+        format!("ws://{authority}")
+    } else {
+        authority
     }
 }
 
@@ -1257,6 +1267,28 @@ mod tests {
             relay_endpoint_for_offer(&endpoint),
             "relay.agentero.app:443"
         );
+    }
+
+    #[test]
+    fn lan_relay_offer_round_trips_without_upgrading_to_tls() {
+        for value in [
+            "ws://192.168.1.10:4000",
+            "ws://[::1]:4000",
+            "ws://localhost",
+        ] {
+            let endpoint = RelayEndpoint::parse(value).expect("LAN endpoint");
+            let offer_endpoint = relay_endpoint_for_offer(&endpoint);
+            assert!(offer_endpoint.starts_with("ws://"));
+            let mobile = RelayEndpoint::parse(&offer_endpoint).expect("mobile endpoint");
+            assert_eq!(mobile.websocket_url(), endpoint.websocket_url());
+            assert_eq!(
+                mobile
+                    .connection_url("agt_test", "client", None)
+                    .unwrap()
+                    .scheme(),
+                "ws"
+            );
+        }
     }
 
     #[test]

@@ -22,6 +22,9 @@
 	},
 	"remoteAccess": {
 		"title": "Remote access",
+		"relayEndpoint": {
+			"label": "Relay address"
+		},
 		"localVaultRequired": "Open a local Vault to provide remote access.",
 		"hostName": {
 			"label": "Computer name"

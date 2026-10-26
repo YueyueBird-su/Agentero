@@ -1,0 +1,22 @@
+{
+  "productName": "Agentero LAN",
+  "identifier": "com.poco-ai.agentero.lan-test",
+  "build": {
+    "beforeBuildCommand": "pnpm build"
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "agentero-lan"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "createUpdaterArtifacts": false,
+    "macOS": {
+      "signingIdentity": "-"
+    }
+  }
+}
