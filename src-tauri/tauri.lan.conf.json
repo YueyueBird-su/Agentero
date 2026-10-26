@@ -2,7 +2,7 @@
   "productName": "Agentero LAN",
   "identifier": "com.poco-ai.agentero.lan-test",
   "build": {
-    "beforeBuildCommand": "pnpm build"
+    "beforeBuildCommand": "VITE_AGENTERO_RELAY_ENDPOINT=ws://10.112.112.93:4000 pnpm build"
   },
   "plugins": {
     "deep-link": {

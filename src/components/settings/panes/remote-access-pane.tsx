@@ -41,7 +41,8 @@ import {
 	remoteCacheClear,
 } from "@/lib/vault/remote/remote-vault";
 
-const DEFAULT_RELAY = "relay.agentero.app";
+const DEFAULT_RELAY =
+	import.meta.env.VITE_AGENTERO_RELAY_ENDPOINT?.trim() || "relay.agentero.app";
 const RELAY_STORAGE_KEY = "agentero.bridge.relayEndpoint";
 
 export function RemoteAccessPane({ vaultPath }: { vaultPath: string | null }) {

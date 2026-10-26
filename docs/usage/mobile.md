@@ -78,3 +78,5 @@ PDF 通过 Bridge 分块传输并缓存到手机。缓存不是事实来源；�
 中继仍需兼容客户端使用的公钥编码。0.13.0 手机端的 `e2ee_hello.key` 是无填充 Base64URL；严格只接受标准 Base64 的中继应先实现显式兼容配置。WS 测试仍保留应用端到端加密、配对批准与签名认证，不应通过放行任意公钥或跳过设备验证解决兼容问题。
 
 独立本机测试构建可使用 `pnpm tauri build --debug --bundles app --config src-tauri/tauri.lan.conf.json`。该覆盖配置使用单独的 App 标识，辅助资源需先按正常开发流程 stage；本机测试还复用了同版本已安装官方 App 的未修改 PDFium、插件 worker 和 adapters。它不是完整发行版打包替代流程。
+
+LAN 覆盖构建通过 `VITE_AGENTERO_RELAY_ENDPOINT` 设置默认中继为 `ws://10.112.112.93:4000`，要求该固定穿透地址属于运行中继的 Mac，且手机已接入相同组网。普通构建未设置该变量时仍使用官方地址。已有手动保存的中继配置优先，不会被构建默认值覆盖。
