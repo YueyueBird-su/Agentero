@@ -79,4 +79,4 @@ PDF 通过 Bridge 分块传输并缓存到手机。缓存不是事实来源；�
 
 独立本机测试构建可使用 `pnpm tauri build --debug --bundles app --config src-tauri/tauri.lan.conf.json`。该覆盖配置使用单独的 App 标识，辅助资源需先按正常开发流程 stage；本机测试还复用了同版本已安装官方 App 的未修改 PDFium、插件 worker 和 adapters。它不是完整发行版打包替代流程。
 
-LAN 覆盖构建通过 `VITE_AGENTERO_RELAY_ENDPOINT` 设置默认中继为 `ws://10.112.112.93:4000`，要求该固定穿透地址属于运行中继的 Mac，且手机已接入相同组网。普通构建未设置该变量时仍使用官方地址。已有手动保存的中继配置优先，不会被构建默认值覆盖。
+LAN 覆盖构建通过 `VITE_AGENTERO_RELAY_ENDPOINT` 设置默认中继为 `ws://10.112.112.91:4000`，要求该固定穿透地址属于运行中继的 Mac，且手机已接入相同组网。普通构建未设置该变量时仍使用官方地址。已有手动保存的中继配置优先，不会被构建默认值覆盖。
