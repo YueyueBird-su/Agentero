@@ -50,8 +50,14 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: lan-${{ matrix.name }}
+          shared-key: lan-native-ocr-v1-${{ matrix.name }}
           cache-on-failure: true
+          # tesseract-rs links native libraries from outside Cargo's target dir.
+          # Keep those files with the Rust cache so restored link paths exist.
+          cache-directories: |
+            ~/.tesseract-rs
+            ~/Library/Application Support/tesseract-rs
+            ~/AppData/Roaming/tesseract-rs
       - uses: ilammy/msvc-dev-cmd@v1
         if: runner.os == 'Windows'
       - name: Linux build dependencies
