@@ -95,7 +95,11 @@ jobs:
       - name: Generate checksums
         run: |
           mkdir publish-assets
-          find release-assets -type f -exec cp -t publish-assets -- {} +
+          # GitHub changes spaces to dots in asset names; hash the final names.
+          while IFS= read -r -d '' artifact; do
+            filename=$(basename "$artifact")
+            cp -- "$artifact" "publish-assets/${filename// /.}"
+          done < <(find release-assets -type f -print0)
           cd publish-assets
           find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
