@@ -80,3 +80,5 @@ PDF 通过 Bridge 分块传输并缓存到手机。缓存不是事实来源；�
 独立本机测试构建可使用 `pnpm tauri build --debug --bundles app --config src-tauri/tauri.lan.conf.json`。该覆盖配置使用单独的 App 标识，辅助资源需先按正常开发流程 stage；本机测试还复用了同版本已安装官方 App 的未修改 PDFium、插件 worker 和 adapters。它不是完整发行版打包替代流程。
 
 LAN 覆盖构建通过 `VITE_AGENTERO_RELAY_ENDPOINT` 设置默认中继为 `ws://10.112.112.91:4000`，要求该固定穿透地址属于运行中继的 Mac，且手机已接入相同组网。普通构建未设置该变量时仍使用官方地址。已有手动保存的中继配置优先，不会被构建默认值覆盖。
+
+个人 fork 的 `LAN desktop packages` 工作流构建 macOS arm64/x64、Linux x64/arm64、Windows x64。开发分支推送相关文件会上传 Actions artifacts（保留 14 天）；推送指向此分支提交的 `lan-v*` 标签（例如 `lan-v0.13.0-20261027.1`）后，全部平台成功才自动创建测试版 Release 并附安装包和 SHA256SUMS。手动触发入口需工作流已存在默认分支；无需改变默认分支即可用上述分支推送/标签触发。该独立流程不要求上游 updater、Apple 或 Android 签名密钥，不生成 CLI 或移动端包；未签名/未公证构建的系统提示仍适用。Windows 构建也会完整准备 PDFium、adapters 和插件 worker，不能复用 Mac 二进制。
