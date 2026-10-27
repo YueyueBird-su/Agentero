@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/lan-release.yml'
       - 'scripts/build-lan.mjs'
+      - 'scripts/prepare-tessdata.mjs'
       - 'src/**'
       - 'src-tauri/**'
       - 'crates/**'
@@ -50,6 +51,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: lan-${{ matrix.name }}
+          cache-on-failure: true
       - uses: ilammy/msvc-dev-cmd@v1
         if: runner.os == 'Windows'
       - name: Linux build dependencies

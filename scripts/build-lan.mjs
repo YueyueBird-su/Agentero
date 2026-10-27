@@ -2,7 +2,7 @@
 import { spawnSync } from "node:child_process";
 
 const result = spawnSync(
-	"pnpm pdfium:stage && pnpm adapters:stage && pnpm plugin-worker:stage:release && pnpm build",
+	"node scripts/prepare-tessdata.mjs && pnpm pdfium:stage && pnpm adapters:stage && pnpm plugin-worker:stage:release && pnpm build",
 	{
 		shell: true,
 		stdio: "inherit",
